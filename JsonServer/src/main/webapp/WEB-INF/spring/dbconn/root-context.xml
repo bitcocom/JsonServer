@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+      
+      <!-- DB연결 API(HikariCP) 설정 -->
+      <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+          <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+          <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/com"/>
+          <property name="username" value="com"/>   
+          <property name="password" value="com01"/>        
+      </bean>
+      
+      <bean id="hikariDataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <constructor-arg ref="hikariConfig"/>
+      </bean>
+      
+      <!-- mybatis-spring API 설정 -->
+      <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+         <property name="dataSource" ref="hikariDataSource"/>
+      </bean>
+      
+      <mybatis-spring:scan base-package="kr.board.mapper"/>
+     
+</beans>

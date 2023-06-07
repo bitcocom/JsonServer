@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.board.mapper.BoardMapper">
+
+ <select id="getLists" resultType="kr.board.entity.Board" 
+                       parameterType="kr.board.entity.Criteria">
+    select * from reply order by bgroup desc, bseq asc
+    limit #{pageStart}, #{perPageNum}
+ </select>
+ 
+ <insert id="insert" parameterType="kr.board.entity.Board">
+    <selectKey keyProperty="bgroup" resultType="kr.board.entity.Board" 
+                                    order="BEFORE">
+       select IFNULL(max(bgroup)+1,0) as bgroup from reply
+    </selectKey>
+    insert into reply(username, title, content, writer, bgroup, bseq, blevel)
+    values(#{username}, #{title},#{content},#{writer},#{bgroup},0,0)
+ </insert>
+ 
+ <insert id="replyInsert" parameterType="kr.board.entity.Board">
+    insert into reply(username, title, content, writer, bgroup, bseq, blevel)
+    values(#{username}, #{title},#{content},#{writer},#{bgroup},#{bseq},#{blevel})
+ </insert>
+ 
+ <select id="get" parameterType="int" resultType="kr.board.entity.Board">
+   select * from reply where num=#{num} 
+ </select>
+
+ <update id="remove" parameterType="int">
+   update reply set bdelete=1 where num=#{num}
+ </update>
+ 
+ <select id="login" parameterType="kr.board.entity.Member" 
+                    resultType="kr.board.entity.Member">
+   select * from member where username=#{username} and password=#{password}
+ </select>
+ 
+ <update id="replyUpdate" parameterType="kr.board.entity.Board">
+   update reply set bseq=bseq+1 where bgroup=#{bgroup} and bseq > #{bseq} 
+ </update>
+ 
+ <select id="totalCount" resultType="int">
+    select count(*) from reply
+ </select>
+ 
+ <select id="getMembers" resultType="kr.board.entity.Customer">
+    select * from customer
+ </select>
+ 
+ <insert id="insMember" parameterType="kr.board.entity.Customer">
+  insert into customer(name, company, gender, email,phone,address, zonecode, roadAddress, address2)
+  values(#{name},#{company},#{gender}, #{email}, #{phone}, #{address}, #{zonecode}, #{roadAddress}, #{address2})
+ </insert>
+ 
+ <update id="modifyMember" parameterType="kr.board.entity.Customer">
+   update customer set email=#{email} where id=#{id}
+ </update>
+ 
+ <delete id="deleteMember">
+   delete from customer where id=#{id} 
+ </delete>
+ 
+ <select id="detailMember" resultType="kr.board.entity.Customer">
+   select * from customer where id=#{id} 
+ </select>
+</mapper>
+
+
+
+
+
+
+
